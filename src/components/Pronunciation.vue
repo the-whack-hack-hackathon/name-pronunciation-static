@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-card class="mt-6 pa-6">
-      <h4 class="text-center">
+      <h4 class="text-center hdr">
         Name Pronunciation Tool 
       </h4>
       <p class="font-italic">
@@ -40,3 +40,10 @@ export default class Pronunciation extends Vue {
   }
 }
 </script>
+
+<style>
+.hdr {
+  background-color: #d71e28;
+  border-bottom: 4px solid #ffcd41;
+}
+</style>
