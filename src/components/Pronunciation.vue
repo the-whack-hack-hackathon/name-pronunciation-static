@@ -8,7 +8,7 @@
     </v-sheet>
   </v-card>
   <v-card>
-    <v-form ref="form">
+    <v-form ref="frmMain">
       <v-container>
         <v-row>
           <v-col cols="12" sm="6" md="4">
@@ -29,34 +29,60 @@
 </template>
 
 <script lang='ts'>
-import { defineComponent } from 'vue';
+import { Vue } from "vue-class-component";
 
-export default defineComponent({
-  data() {
-    return {
-      nameRules: [
-        (v) => !!v || 'Name is required',
-        (v) => /^[a-zA-Z ]+$/i.test(v) || 'Name must be valid'
+export default class Pronunciation extends Vue {
+  public txtName = "";
+  public frmMain: any;
+
+  public get nameRules() {
+    return  [
+        (v: string) => !!v || 'Name is required',
+        (v: string) => /^[a-zA-Z ]+$/i.test(v) || 'Name must be valid'
       ]
-    }
-  },
+  }
 
-  methods: {
-    requestSpokenName() {
-      console.log(`Your name is ${this.txtName}`);
-      this.$refs.form.validate().then(function (result) {
-        if (result.valid) {
-          var audio: any = new Audio("/static/service-bell_daniel_simion.mp3");
-          audio.play();
-        }
-        else {
-          return;
-        }
-      });
-    }
-  },
+  public requestSpokenName() {
+    console.log(`ZXcZXCXZCYour name is ${this.txtName}`);
+     this.$refs.frmMain.validate().then( (result: any) => {
+      console.log(result);
+      if (result.valid) {
+        var audio: any = new Audio(`https://name-pronunciation-tool-twh.azurewebsites.net/api/pronounceName/${this.txtName}`);
+        audio.play();
+      }
+    });
+  }
 
-});
+}
+
+// import { defineComponent } from 'vue';
+
+// export default defineComponent({
+//   data() {
+//     return {
+//       nameRules: [
+//         (v) => !!v || 'Name is required',
+//         (v) => /^[a-zA-Z ]+$/i.test(v) || 'Name must be valid'
+//       ]
+//     }
+//   },
+
+//   methods: {
+//     requestSpokenName() {
+//       console.log(`Your name is ${this.txtName}`);
+//       this.$refs.form.validate().then(function (result) {
+//         if (result.valid) {
+//           var audio: any = new Audio("/static/service-bell_daniel_simion.mp3");
+//           audio.play();
+//         }
+//         else {
+//           return;
+//         }
+//       });
+//     }
+//   },
+
+// });
 </script>
 
 <style>
