@@ -36,7 +36,7 @@ export default defineComponent({
     return {
       nameRules: [
         (v) => !!v || 'Name is required',
-        (v) => /^[a-z]+$/i.test(v) || 'Name must be valid'
+        (v) => /^[a-zA-Z ]+$/i.test(v) || 'Name must be valid'
       ]
     }
   },
