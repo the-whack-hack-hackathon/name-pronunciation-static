@@ -1,18 +1,18 @@
 <template>
-  <v-card class="overflow-hidden" >
-    <v-app-bar app  elevate-on-scroll scroll-target="#scrolling-techniques-7" elevation="12" color="#d71e28" class="hdr">
-      <v-toolbar-title class="flex wht">Name Pronunciation Tool</v-toolbar-title>
+  <v-card class="overflow-hidden">
+    <v-app-bar app elevate-on-scroll scroll-target="#scrolling-techniques-7" elevation="12" color="#d71e28" class="hdr">
+      <v-toolbar-title class="flex wht">NAME PRONUNCIATION TOOL</v-toolbar-title>
     </v-app-bar>
     <v-sheet id="scrolling-techniques-7" class="overflow-y-auto" max-height="60" height="60">
-      
+
     </v-sheet>
   </v-card>
   <v-card>
-    <v-form>
+    <v-form ref="form">
       <v-container>
         <v-row>
           <v-col cols="12" sm="6" md="4">
-            <v-text-field solo label="Name" v-model="txtName">
+            <v-text-field solo label="Name" v-model="txtName" :rules="nameRules" hint="Enter a Name to Spell">
             </v-text-field>
             <v-btn color="primary" @click="requestSpokenName">
               <v-icon left>
@@ -29,18 +29,34 @@
 </template>
 
 <script lang='ts'>
-import { Vue } from "vue-class-component";
+import { defineComponent } from 'vue';
 
-export default class Pronunciation extends Vue {
-  public txtName = "";
+export default defineComponent({
+  data() {
+    return {
+      nameRules: [
+        (v) => !!v || 'Name is required',
+        (v) => /^[a-zA-Z ]+$/i.test(v) || 'Name must be valid'
+      ]
+    }
+  },
 
-  public requestSpokenName() {
-    console.log(`Your name is ${this.txtName}`);
-    // validation if name is empty
-    var audio: any = new Audio("/static/service-bell_daniel_simion.mp3");
-    audio.play();
-  }
-}
+  methods: {
+    requestSpokenName() {
+      console.log(`Your name is ${this.txtName}`);
+      this.$refs.form.validate().then(function (result) {
+        if (result.valid) {
+          var audio: any = new Audio("/static/service-bell_daniel_simion.mp3");
+          audio.play();
+        }
+        else {
+          return;
+        }
+      });
+    }
+  },
+
+});
 </script>
 
 <style>
@@ -50,6 +66,6 @@ export default class Pronunciation extends Vue {
 }
 
 .wht {
-   color: #ffffff;
+  color: #ffffff;
 }
 </style>
