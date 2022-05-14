@@ -56,9 +56,26 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-btn color="primary" @click="onSaveClick">
-            Save
-          </v-btn>
+          <v-col cols="12" sm="2" md="1">
+            <v-btn color="primary" @click="onSaveClick">
+              Save
+            </v-btn>
+          </v-col>
+          <v-col v-if="!newUser" cols="12" sm="2" md="1">
+            <v-btn color="primary" @click="deleteUser">
+              Forget Me
+            </v-btn>
+          </v-col>
+        </v-row>
+        <v-row v-if="!newUser">
+          <v-col>
+            <p>Click "Forget Me" to not participate in pronuncation program.</p>
+          </v-col>
+        </v-row>
+        <v-row v-if="newUser">
+          <v-col>
+            <p>Click "Save" to participate in the pronuciation program.</p>
+          </v-col>
         </v-row>
       </v-container>
     </v-form>
@@ -84,7 +101,7 @@ export default class Pronunciation extends Vue {
   public genders: string[] = ["Male", "Female"];
   public locales: string[] = [];
 
-  public newUser: boolean = false;
+  public newUser: boolean = true;
 
   public defaultUser: any = {
         "uid": null,
@@ -156,13 +173,21 @@ export default class Pronunciation extends Vue {
     }
   }
   public addUser() {
+    this.currUser.uid = this.currUser.id;
     axios.post(`https://name-pronunciation-tool-twh.azurewebsites.net/api/users`, this.currUser).then((response: any) => {
+      this.newUser = false;
     }).catch((response: any) => {
 
     });
   }
 
   public updateUser() {
+    this.voices.forEach( element  => {
+      if (element.name == this.currName) {
+        this.currUser.voiceId = element.id;
+      }
+    })
+
     axios.put(`https://name-pronunciation-tool-twh.azurewebsites.net/api/users/${this.currUser.id}`, this.currUser).then((response: any) => {
     }).catch((response: any) => {
 
@@ -171,7 +196,10 @@ export default class Pronunciation extends Vue {
   }
 
   public deleteUser() {
-
+    axios.delete(`https://name-pronunciation-tool-twh.azurewebsites.net/api/users/${this.currUser.id}`).then((response: any) => {
+      this.newUser = true;
+    })
+    .catch((response: any) => {});
   }
 
   public retrieveUser() {
