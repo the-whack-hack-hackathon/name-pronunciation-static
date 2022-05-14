@@ -1,6 +1,14 @@
-# vue-test-project
+# name-pronunciation-static
 
-This template should help get you started developing with Vue 3 in Vite.
+## Using the UI
+
+The UI is supposed to be used by people coming in from Teamworks and doing a single sign on. To simulate that, you input an employee id in the employee id field and press lookup.
+
+At this point, either the user was found or not found. If the user is found, you can change the values in the field and when you hit save, it will update the user's preferences. Also, a found user can be deleted by clicking on the "Forget Me" button.
+
+If the user is not found, then enter the new information and click save. The user will now be "found" and the "Forget Me" button will light up.
+
+All name fields can be "played". The preferred name fields are where you can specify better versions of a name. For example "First Name: Dwij" should have "Preferred First Name: Dweej", clicking on the preferred first name "play" button will play the right name.
 
 ## Recommended IDE Setup
 
