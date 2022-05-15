@@ -1,7 +1,7 @@
 <template>
   <v-card class="overflow-hidden">
     <v-app-bar app elevate-on-scroll scroll-target="#scrolling-techniques-7" elevation="12" color="#d71e28" class="hdr">
-      <v-toolbar-title class="flex wht">NAME PRONUNCIATION TOOL</v-toolbar-title>
+      <v-toolbar-title class="flex wht"><b>NAME PRONUNCIATION TOOL</b></v-toolbar-title>
     </v-app-bar>
     <v-sheet id="scrolling-techniques-7" class="overflow-y-auto" max-height="60" height="60">
 
@@ -11,7 +11,7 @@
     <v-form ref="frmMain">
       <v-container>
         <v-row>
-          <v-col cols="12" sm="12" md="6">
+          <v-col cols="12" sm="12" md="4">
             <v-text-field solo label="Employee ID" v-model="currUser.id" hint="Employee ID">
             </v-text-field>
           </v-col>
@@ -22,16 +22,20 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="12" sm="12" md="4">
-            <v-select label="Locale" single-line  v-model="currLocale" :items="locales">
+          <v-col cols="12" sm="12" md="2">
+            <v-select label="Locale"  v-model="currLocale" :items="locales">
+            </v-select>
+          </v-col>
+          <v-col cols="12" sm="12" md="3">
+            <v-select label="Gender" :items="genders" v-model="currGender">
+            </v-select>
+          </v-col>
+          <v-col cols="12" sm="12" md="3">
+            <v-select label="Rate" :items="rates" v-model="currRate">
             </v-select>
           </v-col>
           <v-col cols="12" sm="12" md="4">
-            <v-select :items="genders" v-model="currGender">
-            </v-select>
-          </v-col>
-          <v-col cols="12" sm="12" md="4">
-            <v-select :items="filteredVoices" v-model="currName">
+            <v-select label="Voice Name" :items="filteredVoices" v-model="currName">
             </v-select>
           </v-col>
         </v-row>
@@ -61,7 +65,7 @@
               Save
             </v-btn>
           </v-col>
-          <v-col v-if="!newUser" cols="12" sm="2" md="1">
+          <v-col v-if="!newUser" cols="12" sm="2" md="2">
             <v-btn color="primary" @click="deleteUser">
               Forget Me
             </v-btn>
@@ -94,11 +98,13 @@ export default class Pronunciation extends Vue {
   public frmMain: any;
   public currLocale: string = "";
   public currGender: string = "";
+  public currRate: string = "default";
   public currName: string = "";
 
   public voices: any[] = [];
   public filteredVoices: any[] = [];
   public genders: string[] = ["Male", "Female"];
+  public rates: string[] = ["default", "x-slow", "slow", "medium", "fast","x-fast"];
   public locales: string[] = [];
 
   public newUser: boolean = true;
@@ -114,6 +120,7 @@ export default class Pronunciation extends Vue {
         "systemPronunciation": null,
         "id": null,
         "voiceId": 107,
+        "rate": "default"
     }
 
   public currUser: any = {
@@ -127,6 +134,7 @@ export default class Pronunciation extends Vue {
         "systemPronunciation": null,
         "id": null,
         "voiceId": 107,
+        "rate": "default"
   }
 
   public get nameRules() {
@@ -139,28 +147,28 @@ export default class Pronunciation extends Vue {
 
   public speakFirstName() {
     console.log(`Should speak ${this.currUser.firstName}`)
-    var audio: HTMLAudioElement = new Audio(`https://name-pronunciation-tool-twh.azurewebsites.net/api/pronounceNameWithVoice/${this.currUser.voiceId}/${this.currUser.firstName}`);
+    var audio: HTMLAudioElement = new Audio(`https://name-pronunciation-tool-twh.azurewebsites.net/api/pronounceNameWithVoice/${this.currUser.voiceId}/${this.currUser.firstName}/${this.currRate}`);
     audio.play();
 
   }
 
   public speakLastName() {
     console.log(`Should speak ${this.currUser.firstName}`)
-    var audio: HTMLAudioElement = new Audio(`https://name-pronunciation-tool-twh.azurewebsites.net/api/pronounceNameWithVoice/${this.currUser.voiceId}/${this.currUser.lastName}`);
+    var audio: HTMLAudioElement = new Audio(`https://name-pronunciation-tool-twh.azurewebsites.net/api/pronounceNameWithVoice/${this.currUser.voiceId}/${this.currUser.lastName}/${this.currRate}`);
     audio.play();
 
   }
 
   public speakPreferredFirstName() {
     console.log(`Should speak ${this.currUser.firstName}`)
-    var audio: HTMLAudioElement = new Audio(`https://name-pronunciation-tool-twh.azurewebsites.net/api/pronounceNameWithVoice/${this.currUser.voiceId}/${this.currUser.preferredFirstName}`);
+    var audio: HTMLAudioElement = new Audio(`https://name-pronunciation-tool-twh.azurewebsites.net/api/pronounceNameWithVoice/${this.currUser.voiceId}/${this.currUser.preferredFirstName}/${this.currRate}`);
     audio.play();
 
   }
 
   public speakPreferredLastName() {
     console.log(`Should speak ${this.currUser.firstName}`)
-    var audio: HTMLAudioElement = new Audio(`https://name-pronunciation-tool-twh.azurewebsites.net/api/pronounceNameWithVoice/${this.currUser.voiceId}/${this.currUser.preferredLastName}`);
+    var audio: HTMLAudioElement = new Audio(`https://name-pronunciation-tool-twh.azurewebsites.net/api/pronounceNameWithVoice/${this.currUser.voiceId}/${this.currUser.preferredLastName}/${this.currRate}`);
     audio.play();
 
   }
@@ -258,6 +266,12 @@ export default class Pronunciation extends Vue {
     }
   }
 
+  @Watch('currRate')
+  public currRateChg(value: string, oldValue: string) {
+    this.currUser.rate = value;
+    this.defaultUser.rate = value;
+  }
+
   @Watch('currName')
   public onVoiceChange(value: string, oldValue: string) {
     this.voices.forEach( element  => {
@@ -285,34 +299,7 @@ export default class Pronunciation extends Vue {
   }
 }
 
-// import { defineComponent } from 'vue';
 
-// export default defineComponent({
-//   data() {
-//     return {
-//       nameRules: [
-//         (v) => !!v || 'Name is required',
-//         (v) => /^[a-zA-Z ]+$/i.test(v) || 'Name must be valid'
-//       ]
-//     }
-//   },
-
-//   methods: {
-//     requestSpokenName() {
-//       console.log(`Your name is ${this.txtName}`);
-//       this.$refs.form.validate().then(function (result) {
-//         if (result.valid) {
-//           var audio: any = new Audio("/static/service-bell_daniel_simion.mp3");
-//           audio.play();
-//         }
-//         else {
-//           return;
-//         }
-//       });
-//     }
-//   },
-
-// });
 </script>
 
 <style>
